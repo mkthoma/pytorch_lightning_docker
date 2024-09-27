@@ -10,6 +10,7 @@ from models.dogbreed_classifier import DogBreedClassifier
 from rich.progress import Progress
 from rich.panel import Panel
 from rich.console import Console
+import glob
 
 console = Console()
 
@@ -58,8 +59,8 @@ def main(args):
     model = DogBreedClassifier.load_from_checkpoint(args.ckpt_path)
     model.to("cuda" if torch.cuda.is_available() else "cpu")
 
-    # Get the class labels
-    class_labels = model.hparams.class_labels  # Assuming class labels are stored in model's hparams
+    # Define class labels manually
+    class_labels = ['Beagle', 'Boxer', 'Bulldog', 'Dachshund', 'German_Shepherd', 'Golden_Retriever', 'Labrador_Retriever', 'Poodle', 'Rottweiler', 'Yorkshire_Terrier']
 
     # Create the predictions folder if it doesn't exist
     os.makedirs(args.output_folder, exist_ok=True)
@@ -97,9 +98,21 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Perform inference on dog breed images")
-    parser.add_argument("--input_folder", type=str, required=True, help="Path to the folder containing input images")
-    parser.add_argument("--output_folder", type=str, default="predictions", help="Path to the folder to save predictions")
-    parser.add_argument("--ckpt_path", type=str, required=True, help="Path to the model checkpoint")
+
+    # Default paths for the input folder, output folder, and checkpoint
+    default_input_folder = os.path.join("checkpoints", "input_images")
+    default_output_folder = "checkpoints/predicted_images"
+
+    # Find the latest checkpoint
+    checkpoint_dir = "checkpoints"
+    checkpoint_pattern = os.path.join(checkpoint_dir, "dogbreed-*.ckpt")
+    checkpoints = glob.glob(checkpoint_pattern)
+    # Get the most recent checkpoint
+    default_ckpt_path = max(checkpoints, key=os.path.getmtime)
+
+    parser.add_argument("--input_folder", type=str, default=default_input_folder, help="Path to the folder containing input images")
+    parser.add_argument("--output_folder", type=str, default=default_output_folder, help="Path to the folder to save predictions")
+    parser.add_argument("--ckpt_path", type=str, default=default_ckpt_path, help="Path to the model checkpoint")
 
     args = parser.parse_args()
     main(args)
