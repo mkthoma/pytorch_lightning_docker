@@ -66,7 +66,7 @@ The [Dog Breed Classifier](https://github.com/mkthoma/pytorch_lightning_docker/b
     docker run -v $(pwd)/model_artifacts:/app/checkpoints dogbreed-classification infer
     ```
     
-    By default it performs inference on the images present in the input_images folder.
+    By default it performs inference on the images present in the [input_images](https://github.com/mkthoma/pytorch_lightning_docker/tree/main/model_artifacts/input_images) folder.
 
     To modify the infer arguments, you can do the following:
     
