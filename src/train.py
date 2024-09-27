@@ -1,3 +1,4 @@
+import os
 import lightning as L
 from lightning.pytorch.loggers import TensorBoardLogger
 from lightning.pytorch.callbacks import (
@@ -11,24 +12,35 @@ from models.dogbreed_classifier import DogBreedClassifier
 from utils.utils import task_wrapper
 from utils.pylogger import get_pylogger
 from utils.rich_utils import print_config_tree, print_rich_progress, print_rich_panel
+import torch 
 
 log = get_pylogger(__name__)
 
 @task_wrapper
 def train():
+    # Determine the number of workers based on CPU/GPU usage
+    num_workers = os.cpu_count() // 2 if torch.cuda.is_available() else 0
+    print(f"Using {num_workers} workers for data loading.")
+
     # Set up data module
-    data_module = DogBreedImageDataModule(data_dir="data/", batch_size=32, num_workers=4)
+    data_module = DogBreedImageDataModule(data_dir="data/", batch_size=32, num_workers=num_workers)
     
-    # Prepare data (this will download the dataset if it's not already present)
+    print("Preparing data...")
     data_module.prepare_data()
     
-    # Setup (this will create the train/val/test splits)
+    print("Setting up data module...")
     data_module.setup(stage="fit")
     
     # Get the number of classes from the data module
     num_classes = len(data_module.train_dataset.dataset.classes)
+    print(f"Number of classes detected: {num_classes}")
+    print(f"Classes: {data_module.train_dataset.dataset.classes}")
+    
+    if num_classes <= 1:
+        raise ValueError(f"Invalid number of classes detected: {num_classes}. Please check the dataset structure.")
 
     # Set up model
+    print(f"Setting up model with {num_classes} classes...")
     model = DogBreedClassifier(num_classes=num_classes, lr=1e-3)
 
     # Set up logger
@@ -61,6 +73,11 @@ def train():
     # Train the model
     print_rich_panel("Starting training", "Training")
     trainer.fit(model, datamodule=data_module)
+
+    # # Save the model state dictionary
+    # save_model_path = "checkpoints/dogbreed_final_model.ckpt"  # Define your save path here
+    # torch.save(model.state_dict(), save_model_path)  # Save the model
+    # print(f"Model saved to: {save_model_path}")  # Print the save path
 
     print_rich_progress("Finishing up")
 

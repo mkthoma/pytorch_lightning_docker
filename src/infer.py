@@ -67,6 +67,11 @@ def main(args):
     # Get list of image files
     image_files = [f for f in os.listdir(args.input_folder) if f.lower().endswith((".png", ".jpg", ".jpeg"))]
     
+    # Check if any images are found
+    if not image_files:
+        console.print("[red]No images found in the specified input folder.[/red]")
+        return
+
     # Randomly select 10 images (or less if there are fewer than 10 images)
     selected_images = random.sample(image_files, min(10, len(image_files)))
 

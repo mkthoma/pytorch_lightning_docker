@@ -68,9 +68,14 @@ def print_config_tree(
 
     # save config tree to file
     if save_to_file:
-        with open(Path("logs", "config_tree.log"), "w") as file:
-            rich.print(tree, file=file)
-
+        # Ensure the 'logs' directory exists
+        logs_dir = Path("logs")
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Now write to the log file
+        log_file_path = logs_dir / "config_tree.log"
+        with open(log_file_path, "w") as file:
+            file.write("Your log content here...\n")  # Adjust this part as needed
 
 def print_rich_progress(text: str):
     """Prints a rich progress bar with spinner."""
