@@ -74,4 +74,14 @@ The [Dog Breed Classifier](https://github.com/mkthoma/pytorch_lightning_docker/b
     ```
     docker run -v $(pwd)/model_artifacts:/app/checkpoints dogbreed-classification infer --input_folder="path/to/custom/input" --output_folder="path/to/custom/output" --ckpt_path="path/to/custom/checkpoint.ckpt"
     ```
+## Prediction Results
 
+The model prediction gets saved in the predicted_images folder in the model artifacts. 
+
+Samples:
+
+![image](https://github.com/user-attachments/assets/64c92da0-100e-445d-b82a-c722da763106)
+
+![image](https://github.com/user-attachments/assets/41bb0022-6906-46e1-8c92-c9a86f59a4d4)
+
+![image](https://github.com/user-attachments/assets/1ac0c9b9-2180-4c6d-98d5-385b861af29d)
