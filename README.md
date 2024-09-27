@@ -20,8 +20,9 @@ The [DogBreedImageDataModule](https://github.com/mkthoma/pytorch_lightning_docke
 
 You can temporarily set the variables for the current session by running the following commands (replace your_username and your_api_key with the [actual values](https://www.kaggle.com/docs/api#interacting-with-datasets))
 ```
-export KAGGLE_USERNAME="your_username"
-export KAGGLE_KEY="your_api_key"
+echo 'export KAGGLE_USERNAME="your_username"' >> ~/.bashrc
+echo 'export KAGGLE_KEY="your_api_key"' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 ## Model
@@ -48,7 +49,7 @@ The [Dog Breed Classifier](https://github.com/mkthoma/pytorch_lightning_docker/b
 1. Build the Docker image:
 
     ```
-    $ docker build -t dogbreed-classification .
+    docker build -t dogbreed-classification .
     ```
 
 2. To run training:
